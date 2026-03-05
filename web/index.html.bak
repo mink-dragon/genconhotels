@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gen Con Tracker</title>
+    <title>Gen Con 2026 Hotel History Tracker</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -12,8 +12,7 @@
             color: #e6edf3;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            text-align: left;
         }
 
         header {
@@ -23,11 +22,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
         }
 
-        header h1 { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
+        header h1 { font-size: 1.4rem; font-weight: 700; color: #f0f6fc; }
+        header h1 span { color: #58a6ff; }
 
         .last-updated { font-size: 0.8rem; color: #8b949e; }
 
@@ -45,7 +43,7 @@
             50% { opacity: 0.3; }
         }
 
-        .container { max-width: 1400px; margin: 0; padding: 24px; flex: 1; }
+        .container { max-width: 1400px; margin: 0; padding: 24px; }
 
         .stats-row {
             display: flex;
@@ -59,8 +57,7 @@
             border: 1px solid #30363d;
             border-radius: 8px;
             padding: 12px 20px;
-            min-width: 100px;
-            flex: 1 1 80px;
+            min-width: 120px;
         }
 
         .stat-card .value { font-size: 1.8rem; font-weight: 700; }
@@ -89,38 +86,19 @@
             cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.15s;
-            white-space: nowrap;
         }
 
         .filter-btn:hover { background: #30363d; border-color: #8b949e; }
         .filter-btn.active { background: #1f6feb; border-color: #388bfd; color: #fff; }
 
-        #search-input {
-            background: #21262d;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-left: 8px;
-            outline: none;
-            width: 220px;
-            max-width: 100%;
-        }
-
-        #search-input:focus {
-            border-color: #388bfd;
-        }
-
         .table-wrap {
             background: #161b22;
             border: 1px solid #30363d;
             border-radius: 8px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
         }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; min-width: 480px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
         thead { background: #1c2128; }
 
         th {
@@ -149,7 +127,6 @@
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 600;
-            white-space: nowrap;
         }
 
         .badge.added    { background: rgba(63, 185, 80, 0.15);  color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); }
@@ -161,90 +138,17 @@
         .hotel-name.skywalk  { color: #58a6ff; }
         .hotel-name.downtown { color: #3fb950; }
 
-        .rate { font-weight: 600; color: #f0f6fc; white-space: nowrap; }
+        .rate { font-weight: 600; color: #f0f6fc; }
         .dist { color: #8b949e; white-space: nowrap; }
         .timestamp { color: #8b949e; white-space: nowrap; font-size: 0.8rem; }
 
         .empty { text-align: center; padding: 48px; color: #8b949e; }
         .error { text-align: center; padding: 48px; color: #f85149; }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 6px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .page-btn {
-            background: #21262d;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 5px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.82rem;
-            transition: all 0.15s;
-            min-width: 36px;
-            text-align: center;
-        }
-
-        .page-btn:hover:not(:disabled) { background: #30363d; border-color: #8b949e; }
-        .page-btn.active { background: #1f6feb; border-color: #388bfd; color: #fff; }
-        .page-btn:disabled { opacity: 0.35; cursor: default; }
-
-        .page-info {
-            font-size: 0.8rem;
-            color: #8b949e;
-            margin-left: 4px;
-        }
-
-        .per-page-select {
-            background: #21262d;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 5px 8px;
-            border-radius: 6px;
-            font-size: 0.82rem;
-            cursor: pointer;
-            margin-left: 8px;
-        }
-
-        /* Footer */
-        footer {
-            background: #161b22;
-            border-top: 1px solid #30363d;
-            padding: 20px 24px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #8b949e;
-            line-height: 1.8;
-        }
-
-        footer a { color: #58a6ff; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-            header { padding: 12px 16px; }
-            header h1 { font-size: 1.1rem; }
-            .container { padding: 16px; }
-            .stat-card { padding: 10px 14px; }
-            .stat-card .value { font-size: 1.4rem; }
-            #search-input { margin-left: 0; width: 100%; }
-            .controls { gap: 6px; }
-            .filter-btn { padding: 5px 10px; font-size: 0.8rem; }
-            td, th { padding: 8px 10px; font-size: 0.8rem; }
-            .pagination { gap: 4px; }
-            .page-btn { padding: 5px 9px; font-size: 0.78rem; }
-        }
     </style>
 </head>
 <body>
     <header>
-        <img src="logo.svg" alt="Gen Con Tracker" style="height:40px;">
+        <h1>Gen Con 2026 Hotel History Tracker</h1>
         <div class="last-updated">
             <span class="pulse"></span>
             <span id="last-updated">Loading...</span>
@@ -277,7 +181,7 @@
             <button class="filter-btn" data-filter="7d">7 Days</button>
             <button class="filter-btn" data-filter="30d">30 Days</button>
             <button class="filter-btn active" data-filter="all">All Time</button>
-            <input id="search-input" type="text" placeholder="Search hotel or room...">
+            <input id="search-input" type="text" placeholder="Search hotel or room..." style="background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:6px 14px;border-radius:6px;font-size:0.85rem;margin-left:8px;outline:none;width:220px;">
         </div>
 
         <div class="table-wrap">
@@ -297,22 +201,13 @@
                 </tbody>
             </table>
         </div>
-
-        <div class="pagination" id="pagination"></div>
     </div>
-
-    <footer>
-        <p>Thanks to Steve from <a href="https://www.genconhotels.com" target="_blank">Gen Con Hotels</a> for providing the groundwork for this project. Support him <a href="https://ko-fi.com/C0C51B1CRR" target="_blank">here.</a> Special thanks to <a href="https://www.gencon.com" target="_blank">Gen Con</a> for putting on the best tabletop gaming convention in the world. ❤️  -Chris</p>
-    </footer>
 
     <script>
         const JSONL_URL = '/changes.jsonl';
         const REFRESH_INTERVAL = 5000;
         let currentFilter = 'all';
         let allEvents = [];
-        let displayedEvents = [];
-        let currentPage = 1;
-        let perPage = 25;
 
         function parseJSONL(text) {
             return text.trim().split('\n')
@@ -333,15 +228,6 @@
             return events.filter(e => new Date(e.timestamp) >= cutoffs[filter]);
         }
 
-        function applySearch(events) {
-            const q = document.getElementById('search-input').value.toLowerCase().trim();
-            if (!q) return events;
-            return events.filter(e =>
-                (e.hotel_name || '').toLowerCase().includes(q) ||
-                (e.room_name || '').toLowerCase().includes(q)
-            );
-        }
-
         function formatTimestamp(ts) {
             return new Date(ts).toLocaleString('en-US', {
                 timeZone: 'America/New_York',
@@ -358,22 +244,22 @@
             document.getElementById('stat-downtown').textContent = events.filter(e => e.downtown === 1).length;
         }
 
+        function applySearch(events) {
+            const q = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!q) return events;
+            return events.filter(e =>
+                (e.hotel_name || '').toLowerCase().includes(q) ||
+                (e.room_name || '').toLowerCase().includes(q)
+            );
+        }
+
         function renderTable(events) {
-            displayedEvents = events;
-            const totalPages = Math.max(1, Math.ceil(events.length / perPage));
-            if (currentPage > totalPages) currentPage = 1;
-
-            const start = (currentPage - 1) * perPage;
-            const pageEvents = events.slice(start, start + perPage);
-
             const tbody = document.getElementById('table-body');
             if (events.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty">No events in this time range.</td></tr>';
-                document.getElementById('pagination').innerHTML = '';
                 return;
             }
-
-            tbody.innerHTML = pageEvents.map(e => {
+            tbody.innerHTML = events.map(e => {
                 const hotelClass  = e.skywalk === 1 ? 'skywalk' : e.downtown === 1 ? 'downtown' : '';
                 const dtswBadge   = e.skywalk === 1
                     ? '<span class="badge sw">SW</span>'
@@ -390,58 +276,6 @@
                         <td class="dist">${e.distance} mi</td>
                     </tr>`;
             }).join('');
-
-            renderPagination(totalPages, events.length);
-        }
-
-        function renderPagination(totalPages, totalItems) {
-            const pg = document.getElementById('pagination');
-            if (totalPages <= 1) { pg.innerHTML = ''; return; }
-
-            let html = '';
-
-            html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Prev</button>`;
-
-            const range = [];
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
-                    range.push(i);
-                } else if (range[range.length - 1] !== '...') {
-                    range.push('...');
-                }
-            }
-
-            range.forEach(p => {
-                if (p === '...') {
-                    html += `<span class="page-info">…</span>`;
-                } else {
-                    html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
-                }
-            });
-
-            html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next ›</button>`;
-            html += `<span class="page-info">${totalItems} results</span>`;
-            html += `<select class="per-page-select" onchange="changePerPage(this.value)">
-                <option value="25" ${perPage===25?'selected':''}>25 / page</option>
-                <option value="50" ${perPage===50?'selected':''}>50 / page</option>
-                <option value="100" ${perPage===100?'selected':''}>100 / page</option>
-            </select>`;
-
-            pg.innerHTML = html;
-        }
-
-        function goToPage(p) {
-            const totalPages = Math.ceil(displayedEvents.length / perPage);
-            if (p < 1 || p > totalPages) return;
-            currentPage = p;
-            renderTable(displayedEvents);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function changePerPage(val) {
-            perPage = parseInt(val);
-            currentPage = 1;
-            renderTable(displayedEvents);
         }
 
         function updateLastUpdated() {
@@ -454,19 +288,14 @@
                 }) + ' EST';
         }
 
-        function refreshDisplay() {
-            const filtered = filterEvents(allEvents, currentFilter);
-            const searched = applySearch(filtered);
-            updateStats(filtered);
-            renderTable(searched);
-        }
-
         async function fetchAndRender() {
             try {
                 const res = await fetch(JSONL_URL + '?t=' + Date.now());
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 allEvents = parseJSONL(await res.text());
-                refreshDisplay();
+                const filtered = filterEvents(allEvents, currentFilter);
+                updateStats(filtered);
+                renderTable(applySearch(filtered));
                 updateLastUpdated();
             } catch (err) {
                 document.getElementById('table-body').innerHTML =
@@ -475,8 +304,8 @@
         }
 
         document.getElementById('search-input').addEventListener('input', () => {
-            currentPage = 1;
-            refreshDisplay();
+            const filtered = filterEvents(allEvents, currentFilter);
+            renderTable(applySearch(filtered));
         });
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -484,8 +313,9 @@
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentFilter = btn.dataset.filter;
-                currentPage = 1;
-                refreshDisplay();
+                const filtered = filterEvents(allEvents, currentFilter);
+                updateStats(filtered);
+                renderTable(applySearch(filtered));
             });
         });
 

@@ -1,2 +1,20 @@
 app/config.ini
 /.idea
+# secrets
+app/config.ini
+*.ini
+*.env
+
+# runtime outputs
+web/data.json
+web/timestamp.txt
+web/*.log
+*.log
+
+# python junk
+__pycache__/
+*.pyc
+
+# OS/editor
+.DS_Store
+.vscode/
